@@ -20,3 +20,19 @@ class Query(graphene.AbstractType):
 
     def resolve_all_bookings(self, *args, **kwargs):
         return app_models.Booking.objects.all()
+
+class CreatePerson(graphene.Mutation):
+    name = graphene.String()
+
+    class Arguments:
+        name = graphene.String()
+
+    def mutate(self, info, name):
+        person = app_models.Person(name=name)
+        person.save()
+        return CreatePerson(
+            name=person.name
+        )
+
+class Mutation(graphene.ObjectType):
+    create_person = CreatePerson.Field()
